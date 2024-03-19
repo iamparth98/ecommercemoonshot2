@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { SignIn } from "@clerk/clerk-react";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
+  const data = api.category.categoryList.useQuery();
 
   const user = useUser();
 

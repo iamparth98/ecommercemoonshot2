@@ -12,7 +12,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
+import { useState } from "react";
+import { useSignIn } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+
 export function LoginPage() {
+  const { isLoaded, signIn, setActive } = useSignIn();
+  const [emailAddress, setEmailAddress] = useState("");
+  const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  // start the sign In process.
+  const handleSubmit = async (e: MouseEvent) => {
+    if (!isLoaded) {
+      return;
+    }
+
+    try {
+      const result = await signIn.create({
+        identifier: emailAddress,
+        password,
+      });
+
+      if (result.status === "complete") {
+        console.log(result);
+        await setActive({ session: result.createdSessionId });
+        router.push("/");
+      } else {
+        /*Investigate why the sign-in hasn't completed */
+        console.log(result);
+      }
+    } catch (err: any) {
+      setError("error", err.errors[0].longMessage);
+    }
+  };
+
   return (
     <main className=" mt-[36px] flex items-center justify-center">
       <Card className="h-[691px] w-[576px] rounded-[20px]">
@@ -33,6 +67,7 @@ export function LoginPage() {
               <div className="flex flex-col space-y-1.5 text-base">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  onChange={(e) => setEmailAddress(e.target.value)}
                   className="h-[48px] w-[456px]"
                   id="name"
                   placeholder="Enter"
@@ -42,6 +77,7 @@ export function LoginPage() {
                 <Label htmlFor="password">Password</Label>
                 <div className="relative flex flex-col items-center">
                   <Input
+                    onChange={(e) => setPassword(e.target.value)}
                     className="h-[48px] w-[456px] "
                     type="password"
                     id="password"
@@ -56,7 +92,10 @@ export function LoginPage() {
           </form>
         </CardContent>
         <div className="mt-5 flex flex-col items-center space-y-1.5">
-          <Button className="h-[56px] w-[456px] text-base font-medium">
+          <Button
+            onClick={handleSubmit}
+            className="h-[56px] w-[456px] text-base font-medium"
+          >
             LOGIN
           </Button>
         </div>

@@ -46,7 +46,11 @@ export function Verification() {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === "complete") {
-        await setActive({ session: completeSignUp.createdSessionId });
+        try {
+          await setActive({ session: completeSignUp.createdSessionId });
+        } catch (err) {
+          console.log(err);
+        }
         router.push("/");
       }
     } catch (err: any) {
@@ -72,6 +76,7 @@ export function Verification() {
             <span className="absolute left-[77px] top-[-25px]">Code</span>
             <InputOTP
               value={code}
+              onChange={(code) => setCode(code)}
               className="mb-[64px]"
               maxLength={8}
               render={({ slots }) => (

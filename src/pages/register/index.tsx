@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 export function RegisterPage() {
+  const [error, setError] = useState("");
   const [emailAddress, setEmailAddress] = useState<string>("");
   const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +45,7 @@ export function RegisterPage() {
       // change the UI to our pending section.
       setPendingVerification(true);
     } catch (err: any) {
+      setError(err.errors[0].message);
       console.error(JSON.stringify(err, null, 2));
     }
   }
@@ -96,6 +98,7 @@ export function RegisterPage() {
             </CardContent>
 
             <div className="mt-5 flex flex-col items-center space-y-1.5">
+              <div>{error}</div>
               <Button
                 onClick={handleSubmit}
                 className="h-[56px] w-[456px] text-base font-medium"
