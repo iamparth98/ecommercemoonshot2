@@ -23,7 +23,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   // start the sign In process.
-  const handleSubmit = async (e: MouseEvent) => {
+  const handleSubmit = async (e) => {
     if (!isLoaded) {
       return;
     }
@@ -43,7 +43,7 @@ export function LoginPage() {
         console.log(result);
       }
     } catch (err: any) {
-      setError("error", err.errors[0].longMessage);
+      setError(err.errors[0].longMessage);
     }
   };
 
